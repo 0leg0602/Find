@@ -115,16 +115,16 @@ function start_game(level_name) {
   	RIGHT: THREE.MOUSE.ROTATE,
   }
 
-  // controls.mouseButtons = {
-  //   LEFT: "",
-  //   MIDDLE: THREE.MOUSE.ROTATE,
-  //   RIGHT: THREE.MOUSE.ROTATE,
-  // }
-
-  if (level.name == "learn to play") {
-    controls.zoomSpeed = 0;
-    controls.noZoom = true;
+  controls.mouseButtons = {
+    LEFT: "",
+    MIDDLE: THREE.MOUSE.ROTATE,
+    RIGHT: THREE.MOUSE.ROTATE,
   }
+
+  // if (level.name == "learn to play") {
+  //   controls.zoomSpeed = 0;
+  //   controls.noZoom = true;
+  // }
 
 
 
