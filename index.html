@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en" style="
+background: linear-gradient(0deg, #5b5b5b, transparent);
+height: 100%;
+font-family: Monospace;
+display: none;
+">
+
+<head>
+	<meta charset="utf-8">
+	<title>Find</title>
+	<style>
+		body {
+			margin: 0;
+		}
+
+		h1 {
+			font-size: 70px;
+			font-weight: 800;
+			background: linear-gradient(180deg, #09009f, #00ff95 80%);
+			-webkit-background-clip: text;
+			background-clip: text;
+			-webkit-text-fill-color: transparent;
+
+		}
+
+		@keyframes unblur {
+			from {
+				filter: blur(9px);
+			}
+
+			to {
+				filter: blur(0px);
+			}
+		}
+
+
+
+		/* CSS */
+		.button-pushable {
+			position: relative;
+			border: none;
+			background: transparent;
+			padding: 0;
+			cursor: pointer;
+			outline-offset: 4px;
+			transition: filter 250ms;
+			user-select: none;
+			-webkit-user-select: none;
+			touch-action: manipulation;
+		}
+
+		.button-shadow {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: 12px;
+			background: hsl(0deg 0% 0% / 0.25);
+			will-change: transform;
+			transform: translateY(2px);
+			transition:
+				transform 600ms cubic-bezier(.3, .7, .4, 1);
+		}
+
+		.button-edge {
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: 12px;
+			background: linear-gradient(to left,
+					hsl(340deg 100% 16%) 0%,
+					hsl(340deg 100% 32%) 8%,
+					hsl(340deg 100% 32%) 92%,
+					hsl(340deg 100% 16%) 100%);
+		}
+
+		.button-front {
+			display: block;
+			position: relative;
+			padding: 12px 27px;
+			border-radius: 12px;
+			font-size: 2.1rem;
+			color: white;
+			background: hsl(345deg 100% 47%);
+			will-change: transform;
+			transform: translateY(-4px);
+			transition:
+				transform 600ms cubic-bezier(.3, .7, .4, 1);
+		}
+
+		.button-pushable:hover {
+			filter: brightness(110%);
+			-webkit-filter: brightness(110%);
+		}
+
+		.button-pushable:hover .button-front {
+			transform: translateY(-6px);
+			transition:
+				transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+		}
+
+		.button-pushable:active .button-front {
+			transform: translateY(-2px);
+			transition: transform 34ms;
+		}
+
+		.button-pushable:hover .button-shadow {
+			transform: translateY(4px);
+			transition:
+				transform 250ms cubic-bezier(.3, .7, .4, 1.5);
+		}
+
+		.button-pushable:active .button-shadow {
+			transform: translateY(1px);
+			transition: transform 34ms;
+		}
+
+		.button-pushable:focus:not(:focus-visible) {
+			outline: none;
+		}
+
+		#gui {
+			position: absolute;
+			top: 0px;
+			width: 100%;
+			padding: 10px;
+			box-sizing: border-box;
+			text-align: center;
+			-moz-user-select: none;
+			-webkit-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
+			pointer-events: none;
+			z-index: 1;
+			text-align: -webkit-center;
+		}
+
+		.menu {
+
+			text-align: -webkit-center;
+			position: relative;
+			align-items: start;
+			align-content: center;
+			justify-content: center;
+			justify-items: center;
+			height: 100%;
+		}
+	</style>
+
+	<script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+	<script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+	<script src="http://code.jquery.com/color/jquery.color-2.1.2.min.js"></script>
+
+</head>
+
+<body style="overflow: hidden;height: 100%;">
+	<div id="mainmenu" class="menu" style="left: 50%;position: fixed;width: 500px;transform: translate(-250px, 0px);">
+		<h1>FIND</h1>
+		<button onclick="switch_div(true)" class="button-pushable" role="button">
+			<span class="button-shadow"></span>
+			<span class="button-edge"></span>
+			<span class="button-front text">LEVEL SELECT</span>
+		</button>
+	</div>
+
+	<div id="levelselect" class="menu" style="bottom: -100%;">
+		<div onclick="switch_div(false)" id="back_div" style="
+			cursor: pointer;
+		    display: flex;
+			height: 6%;
+			width: -webkit-fill-available;
+			position: absolute;
+			justify-content: center;
+			align-items: center;
+			top: 0px;
+			">
+
+			<div style="
+				position: absolute;
+				height: 50%;
+				width: -webkit-fill-available;
+				top: 0px;
+				background: repeating-linear-gradient(130deg, black, #ffffff 100px);">
+			</div>
+
+			<h2 style="
+				color: white;
+				z-index: 1;
+				text-shadow: rgb(0 0 0) -1px -1px 0px, rgb(0 0 0) 1px -1px 0px, rgb(0 0 0) -1px 1px 0px, rgb(0 0 0) 1px 1px 0px;
+				">
+				back
+			</h2>
+
+			<div style="
+				position: absolute;
+				height: 50%;
+				width: -webkit-fill-available;
+				bottom: 0px;
+				background: repeating-linear-gradient(50deg, black, #ffffff 100px);
+				">
+			</div>
+
+		</div>
+		<h1 style="margin-bottom: 0px;">LEVEL SELECT</h1>
+		<p id="levels_completed"></p>
+		<p id="level_select" style="opacity: 0;">none</p>
+		<div id="cards" style="width: -webkit-fill-available;
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-around;"></div>
+	</div>
+
+	<div id="gameover" class="menu" style="display: none; right: -100%;">
+
+		<h1 id="gameover_label" style="margin-bottom: 0px;">GAME OVER</h1>
+
+		<h2 id="gameover_label2"></h2>
+
+		<div style="display: grid;justify-items: stretch;justify-content: center;" >
+			<button id="next_level_button" onclick="next_level()" class="button-pushable" style="margin-bottom: 5%;display: none;" role="button">
+				<span class="button-shadow"></span>
+				<span class="button-edge"></span>
+				<span class="button-front text">NEXT</span>
+			</button>
+	
+			<button onclick="restart_level()" class="button-pushable" style="margin-bottom: 5%;" role="button">
+				<span class="button-shadow"></span>
+				<span class="button-edge"></span>
+				<span class="button-front text">RESTART</span>
+			</button>
+	
+			<button onclick="to_main_menu()" class="button-pushable" style="margin-bottom: 5%;" role="button">
+				<span class="button-shadow"></span>
+				<span class="button-edge"></span>
+				<span class="button-front text">TO MAIN MENU</span>
+			</button>
+		</div>
+
+
+	</div>
+
+
+
+	<div id="gui" style="display: none;height: -webkit-fill-available;">
+		<div id="progress"
+			style="width: -webkit-fill-available;height: 3%;background: linear-gradient(90deg, red, transparent 0%);">
+			<p id="progress_label" style="height: -webkit-fill-available; margin: 0px; align-content: center; "></p>
+		</div>
+		<div style="width: fit-content;">
+			<p id="task" style="border: 8px solid grey;border-radius: 12px;background: grey;color: white;">task</p>
+		</div>
+
+		<div style="
+			top: 50%;
+			position: sticky;
+			">
+			<h2 id="message" style="
+				font-size: 30px;
+				white-space: pre-line;
+				text-shadow: -1px -1px 0 #ffffff, 1px -1px 0 #ffffff, -1px 1px 0 #ffffff, 1px 1px 0 #ffffff;
+				display: none
+				">
+			</h2>
+		</div>
+
+	</div>
+	<script type="module" src="./main.js"></script>
+	<script>
+
+
+
+		if (localStorage.getItem("completed_levels_list") == null) {
+			localStorage.setItem("completed_levels_list", "[]");
+		}
+
+		const cln = JSON.parse(localStorage.getItem("completed_levels_list")).length;
+
+
+
+		level1 = { name: "learn to play", difficulty: "tutorial", gamemode: "tutorial", required_levels: 0 }
+		level2 = { name: "more shapes", difficulty: "easy", gamemode: "time limit,70", required_levels: 1 }
+		level3 = { name: "more colors", difficulty: "medium", gamemode: "time limit,60", required_levels: 2 }
+		level4 = { name: "now everything is spinning", difficulty: "hard", gamemode: "time limit,70", required_levels: 3 }
+
+		const levels = [level1, level2, level3, level4]
+
+
+
+		function page_reload() {
+			$("html").fadeOut("slow");
+			$("html").promise().done(function () {
+				location.reload();
+			});
+		}
+		function to_main_menu() {
+			page_reload();
+		}
+		function next_level() {
+			localStorage.setItem("start_on_load", levels[(+current_level_num + 1)].name);
+			page_reload();
+		}
+		function restart_level() {
+			localStorage.setItem("start_on_load", current_level.name);
+			page_reload();
+		}
+
+		window.onload = function () {
+			if (localStorage.getItem("start_on_load") != null) {
+				start_game(localStorage.getItem("start_on_load"))
+			}
+		};
+
+
+
+		$("#back_div").slideUp(0)
+		$("#levels_completed").text("Levels completed: " + cln)
+		$("html").fadeIn()
+
+		function switch_div(forward) {
+			if (forward) {
+				$("#mainmenu").animate({ left: "-100%" }, 1000)
+				$("#levelselect").animate({ bottom: "0px" }, 1000)
+				$("#levelselect").promise().done(function () {
+					$("#back_div").slideDown()
+				});
+			} else {
+				$("#back_div").slideUp()
+				$("#back_div").promise().done(function () {
+					$("#levelselect").animate({ bottom: "-100%" }, 1000)
+					$("#mainmenu").animate({ left: "50%" }, 1000)
+				});
+			}
+		}
+
+		function play_button_enter(text) {
+			if (!($("#level_select").text() == text && $("#level_select").css("opacity") == 1)) {
+				duration_time = 300;
+				$("#level_select").animate({ opacity: 0 }, duration_time)
+				$("#level_select").promise().done(function () {
+					$("#level_select").text(text)
+					$("#level_select").animate({ opacity: 1 }, duration_time)
+				});
+			}
+		}
+
+		function play_button_leave() {
+			duration_time = 300;
+			$("#level_select").animate({ opacity: 0 }, duration_time)
+			$("#level_select").promise().done(function () {
+				$("#level_select").text("none")
+			});
+		}
+
+		for (const level_num in levels) {
+			let level = levels[level_num];
+
+			let completed_levels_list = JSON.parse(localStorage.getItem("completed_levels_list"))
+
+			let is_level_completed = false;
+
+			for (const key in completed_levels_list) {
+				let completed_level = completed_levels_list[key]
+				if (level.name == completed_level.name) {
+					is_level_completed = true;
+				} else {
+				}
+			}
+
+			let outline_color = "black";
+
+			let color1;
+			let color2;
+
+			if (is_level_completed) {
+				color1 = "green";
+				color2 = "#008b00";
+			} else {
+				color1 = "grey";
+				color2 = "grey";
+			}
+
+
+			let card_div = document.createElement("div");
+			card_div.style = "border: 8px solid " + color1 + ";border-radius: 22px;background: repeating-linear-gradient(45deg, " + color1 + ", " + color2 + " 100px);align-self: center;"
+
+			let level_number_label = document.createElement("h2");
+			level_number_label.textContent = "LEVEL " + level_num;
+
+			let play_button = document.createElement("button");
+			play_button.classList.add("button-pushable");
+			play_button.role = "button";
+
+			play_button.addEventListener('click', function () {
+				start_game(level.name);
+			});
+
+			play_button.addEventListener('mouseenter', function () {
+				play_button_enter(level.name);
+			});
+
+			play_button.addEventListener('mouseleave', function () {
+				play_button_leave();
+			});
+
+			let button_shadow_span = document.createElement("span");
+			button_shadow_span.classList.add("button-shadow");
+
+			let button_edge_span = document.createElement("span");
+			button_edge_span.classList.add("button-edge");
+
+			let button_front_text_span = document.createElement("span");
+			button_front_text_span.classList.add("button-front");
+			button_front_text_span.textContent = "PLAY";
+
+			if (cln < level.required_levels) {
+				play_button.style = "filter: grayscale(1);pointer-events: none;white-space: pre-line;"
+				if (level.required_levels - cln == 1) {
+					button_front_text_span.textContent = "complete " + (level.required_levels - cln) + " \nmore level"
+				} else {
+					button_front_text_span.textContent = "complete " + (level.required_levels - cln) + " \nmore levels"
+				}
+				button_front_text_span.style = "font-size: small"
+			}
+
+			play_button.appendChild(button_shadow_span)
+			play_button.appendChild(button_edge_span)
+			play_button.appendChild(button_front_text_span)
+
+
+			card_div.appendChild(level_number_label);
+			card_div.appendChild(play_button);
+			$("#cards").append(card_div);
+
+
+
+		}
+
+	</script>
+</body>
+
+</html>
