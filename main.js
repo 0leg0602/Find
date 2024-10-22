@@ -109,11 +109,11 @@ function start_game(level_name) {
   controls.staticMoving = true;
   controls.dynamicDampingFactor = 0.3;
 
-  controls.mouseButtons = {
-  	LEFT: THREE.MOUSE.ROTATE,
-  	MIDDLE: THREE.MOUSE.ROTATE,
-  	RIGHT: THREE.MOUSE.ROTATE,
-  }
+  // controls.mouseButtons = {
+  // 	LEFT: THREE.MOUSE.ROTATE,
+  // 	MIDDLE: THREE.MOUSE.ROTATE,
+  // 	RIGHT: THREE.MOUSE.ROTATE,
+  // }
 
   controls.mouseButtons = {
     LEFT: "",
@@ -121,10 +121,10 @@ function start_game(level_name) {
     RIGHT: THREE.MOUSE.ROTATE,
   }
 
-  // if (level.name == "learn to play") {
-  //   controls.zoomSpeed = 0;
-  //   controls.noZoom = true;
-  // }
+  if (level.name == "learn to play") {
+    controls.zoomSpeed = 0;
+    controls.noZoom = true;
+  }
 
 
 
